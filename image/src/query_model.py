@@ -5,6 +5,10 @@ import boto3
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from botocore.exceptions import ClientError
+from dotenv import load_dotenv
+
+env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
+load_dotenv(dotenv_path=env_path)
 
 TABLE_NAME = os.environ.get("TABLE_NAME")
 

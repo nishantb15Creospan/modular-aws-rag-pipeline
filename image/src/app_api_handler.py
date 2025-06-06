@@ -8,6 +8,10 @@ from mangum import Mangum
 from pydantic import BaseModel
 from query_model import QueryModel
 from rag_app.query_rag import query_rag
+from rag_app.get_chroma_db import get_chroma_db  # Returns a VectorStoreInterface
+from rag_app.bedrock_llm import BedrockLLM        # Implements LLMInterface
+
+BEDROCK_MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0"
 
 WORKER_LAMBDA_NAME = os.environ.get("WORKER_LAMBDA_NAME", None)
 
@@ -33,21 +37,24 @@ def get_query_endpoint(query_id: str) -> QueryModel:
 @app.post("/submit_query")
 def submit_query_endpoint(request: SubmitQueryRequest) -> QueryModel:
     # Create the query item, and put it into the data-base.
-    new_query = QueryModel(query_text=request.query_text)
+    # new_query = QueryModel(query_text=request.query_text)
 
-    if WORKER_LAMBDA_NAME:
-        # Make an async call to the worker (the RAG/AI app).
-        new_query.put_item()
-        invoke_worker(new_query)
-    else:
-        # Make a synchronous call to the worker (the RAG/AI app).
-        query_response = query_rag(request.query_text)
-        new_query.answer_text = query_response.response_text
-        new_query.sources = query_response.sources
-        new_query.is_complete = True
-        new_query.put_item()
+    # if WORKER_LAMBDA_NAME:
+    #     # Make an async call to the worker (the RAG/AI app).
+    #     new_query.put_item()
+    #     invoke_worker(new_query)
+    # else:
+    #     # Make a synchronous call to the worker (the RAG/AI app).
+    #     query_response = query_rag(request.query_text)
+    #     new_query.answer_text = query_response.response_text
+    #     new_query.sources = query_response.sources
+    #     new_query.is_complete = True
+    #     new_query.put_item()
 
-    return new_query
+    # return new_query
+    chroma_db = get_chroma_db()  # Must return VectorStoreInterface
+    llm = BedrockLLM(model_id=BEDROCK_MODEL_ID)
+    return query_rag(request.query_text, chroma_db, llm)
 
 
 def invoke_worker(query: QueryModel):
