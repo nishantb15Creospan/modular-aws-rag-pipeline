@@ -1,11 +1,9 @@
 from langchain_community.vectorstores import Chroma
-from rag_app.get_embedding_function import get_embedding_function
+from get_embedding_function import get_embedding_function
 
 import shutil
 import sys
 import os
-from langchain_community.vectorstores import Chroma
-from rag_app.get_embedding_function import get_embedding_function
 
 CHROMA_PATH = os.environ.get("CHROMA_PATH", "data/chroma")
 IS_USING_IMAGE_RUNTIME = bool(os.environ.get("IS_USING_IMAGE_RUNTIME", False))

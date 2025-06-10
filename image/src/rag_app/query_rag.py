@@ -51,10 +51,11 @@
 
 from dataclasses import dataclass
 from typing import List
-from rag_app.interfaces import LLMInterface
-from rag_app.interfaces import VectorStoreInterface
-from rag_app.get_chroma_db import get_chroma_db  # Returns a VectorStoreInterface
-from rag_app.bedrock_llm import BedrockLLM        # Implements LLMInterface
+from interfaces import LLMInterface
+from interfaces import VectorStoreInterface
+from get_chroma_db import get_chroma_db  # Returns a VectorStoreInterface
+from bedrock_llm import BedrockLLM        # Implements LLMInterface
+import sys
 
 BEDROCK_MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0"
 
@@ -91,4 +92,5 @@ if __name__ == "__main__":
     # These are the interface implementations that should be defined in your application.
     chroma_db = get_chroma_db()  # Must return VectorStoreInterface
     llm = BedrockLLM(model_id=BEDROCK_MODEL_ID)
-    query_rag("How much does a landing page cost to develop?", chroma_db, llm)
+    prompt = sys.argv[1]
+    query_rag(prompt, chroma_db, llm)

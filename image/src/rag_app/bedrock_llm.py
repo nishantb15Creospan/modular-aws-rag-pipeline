@@ -1,4 +1,4 @@
-from rag_app.interfaces import LLMInterface
+from interfaces import LLMInterface
 from langchain.prompts import ChatPromptTemplate
 from langchain_aws import ChatBedrock
 
