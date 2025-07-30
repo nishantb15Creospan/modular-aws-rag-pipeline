@@ -3,7 +3,8 @@
 env/
 .env
 myvenv
-\data
+/data
+image/src/data/
 
 
 # Some files generated for tutorial.
