@@ -5,6 +5,7 @@ env/
 myvenv
 /data
 image/src/data/
+prompts.json
 
 
 # Some files generated for tutorial.

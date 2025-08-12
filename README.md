@@ -124,3 +124,10 @@ Then run this command to deploy it (assuming you have AWS CLI already set up, an
 ```sh
 cdk deploy
 ```
+
+## Testing
+You can run the test cases using this command:
+```sh
+cd image
+PYTHONPATH=src pytest src/tests/
+```
