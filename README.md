@@ -131,3 +131,13 @@ You can run the test cases using this command:
 cd image
 PYTHONPATH=src pytest src/tests/
 ```
+
+You must create a prompts.json file in the same folder as the test file with the actual and expected outputs.
+```sh
+[
+    {
+        "prompt": "What is the airspeed of an unladen swallow?",
+        "expected_output": "An African or European swallow?"
+    }
+]  
+```
