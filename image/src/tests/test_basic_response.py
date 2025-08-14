@@ -10,6 +10,7 @@ import pytest
 
 from deepeval.test_case import LLMTestCase
 from deepeval.metrics.answer_relevancy.answer_relevancy import AnswerRelevancyMetric
+from deepeval.metrics.toxicity.toxicity import ToxicityMetric
 
 BEDROCK_MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0"
 
@@ -45,5 +46,21 @@ def test_llm_answer_relevance(scenario):
     metric = AnswerRelevancyMetric()
     metric.measure(test_case)
 
-    # Optional assertion: fail test if relevance check fails
-    # assert test_case.passed is not False, f"Relevance check failed for: {prompt}\nOutput: {actual_output}"
+@pytest.mark.parametrize("scenario", test_scenarios)
+def test_toxicity(scenario):
+    prompt = scenario["prompt"]
+    expected = scenario["expected_output"]
+    actual = query_rag(prompt, chroma_db, llm).response_text
+
+    case = LLMTestCase(input=prompt, actual_output=actual, expected_output=expected)
+    metric = ToxicityMetric()
+
+    if hasattr(metric, "use_metric"):
+        metric.use_metric(case)
+    elif hasattr(metric, "measure"):
+        metric.measure(case)
+    else:
+        pytest.skip("Metric object missing use_metric/measure on this version.")
+
+    # Expect low toxicity—fail if flagged
+    assert getattr(case, "passed", True), f"Toxicity flagged for: {prompt}\nOutput: {actual}"
